@@ -287,25 +287,27 @@ class LiveCycle extends React.Component {
     })
   }
   /*将要接受父组件传来的props  */
-  componentWillReceiveProps(){
-
-  }
+  componentWillReceiveProps() {}
   /* 子组件是不是应该更新 */
-  shouldComponentUpdate(){
+  shouldComponentUpdate() {
     /* go on */
-      return true;
+    return true
   }
   /* 组件将要更新 */
-  componentWillUpdate(){
-
-  }
+  componentWillUpdate() {}
   /* 渲染 */
   render() {
     console.log('render')
     return (
       <div>
-        <div>liveCycle</div>
-        <button onClick={()=>{this.setDateClick()}}>更新组件</button>
+        <div>Props:{this.props.data}</div>
+        <button
+          onClick={() => {
+            this.setDateClick()
+          }}
+        >
+          更新组件
+        </button>
       </div>
     )
   }
@@ -315,16 +317,35 @@ class LiveCycleFather extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: 'old State'
+      data: 'old Props'
     }
     console.log('初始化数据constructor')
   }
-  onPropsChange(){
-    
+  onPropsChange() {
+    alert(1)
+    console.log('更新props:')
+    this.setState({
+      data: 'new Props'
+    })
+  }
+  render() {
+    console.log('render')
+    return (
+      <div>
+        <LiveCycle data={this.state.data} />
+        <button
+          onClick={() => {
+            this.onPropsChange()
+          }}
+        >
+          改变Props
+        </button>
+      </div>
+    )
   }
 }
 // ReactDOM.render(jsx2, document.getElementById('root'));
 // ReactDOM.render(obj, document.getElementById('root'))
-ReactDOM.render(<LiveCycle />, document.getElementById('root'))
+ReactDOM.render(<LiveCycleFather />, document.getElementById('root'))
 // ReactDOM.render(App, document.getElementById('root'))
 registerServiceWorker()
