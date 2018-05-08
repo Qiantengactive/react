@@ -110,7 +110,8 @@ class Child extends React.Component {
   }
   handleClick() {
     console.log('onClick')
-    this.props.changeColor('red');
+    /* 触发changeColor changeColor存在于<child changeColor=XXX}></child>  */
+    this.props.changeColor('red')
   }
   render() {
     return (
@@ -128,31 +129,32 @@ class Child extends React.Component {
     )
   }
 }
-class Father extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      bgColor: '#999999'
-    }
-  }
-  onBgColorChange(color) {
-    this.setState({
-      bgColor: color
-    })
-  }
-  render(props) {
-    return (
-      <div style={{ background: this.state.bgColor }}>
-        <Child
-          bgColor={this.state.bgColor}
-          changeColor={(color) => {
-            this.onBgColorChange(color)
-          }}
-        />
-      </div>
-    )
-  }
-}
+/* 子传父 */
+// class Father extends React.Component {
+//   constructor(props) {
+//     super(props)
+//     this.state = {
+//       bgColor: '#999999'
+//     }
+//   }
+//   onBgColorChange(color) {
+//     this.setState({
+//       bgColor: color
+//     })
+//   }
+//   render(props) {
+//     return (
+//       <div style={{ background: this.state.bgColor }}>
+//         <Child
+//           bgColor={this.state.bgColor}
+//           changeColor={color => {
+//             this.onBgColorChange(color)
+//           }}
+//         />
+//       </div>
+//     )
+//   }
+// }
 let obj = (
   <div>
     <JsxComponent />
@@ -169,6 +171,75 @@ class Title extends React.Component {
       <div>
         <h1>{this.props.title}</h1>
         <h1>{this.props.children}</h1>
+      </div>
+    )
+  }
+}
+/* 子组件数据传递 */
+class Child1 extends React.Component {
+  // constructor(props) {
+  //   super(props)
+  // }
+  handleClick() {
+    console.log('onClick')
+    this.props.changeChild2Color('red')
+  }
+  render() {
+    return (
+      <div>
+        <h1>Child1:{this.props.bgColor}</h1>
+        {/* 事件处理方式2*/}
+        <button
+          onClick={e => {
+            this.handleClick(e)
+          }}
+        >
+          改变Child2颜色
+        </button>
+      </div>
+    )
+  }
+}
+class Child2 extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  // }
+  render() {
+    return (
+      <div style={{ background: this.props.bgColor }}>
+        <h1>Child2背景颜色：{this.props.bgColor}</h1>
+      </div>
+    )
+  }
+}
+/* 子组件数据传递 */
+class Father extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      child2BgColor: '#999'
+    }
+  }
+  onChild2BgColorChange(color) {
+    console.log(111111111111111111)
+    console.log(color)
+    console.log(111111111111111111)
+    this.setState({
+      child2BgColor: color
+    })
+  }
+  render() {
+    return (
+      <div>
+        {/* child1 组件中调用changeChild2Color 调用Father组件
+            中的onChild2BgColorChange同时设置child2BgColor
+            触发设置child2BgColor==》设置bgColor */}
+        <Child1
+          changeChild2Color={color => {
+            this.onChild2BgColorChange(color)
+          }}
+        />
+        <Child2 bgColor={this.state.child2BgColor} />
       </div>
     )
   }
@@ -190,8 +261,70 @@ class App extends React.Component {
     )
   }
 }
+/* 生命周期 */
+class LiveCycle extends React.Component {
+  /* 构造函数 */
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: 'old State'
+    }
+    console.log('初始化数据constructor')
+  }
+  /* 组件将要加载 */
+  componentWillMount() {
+    /* 挂载前 */
+    console.log('挂载前componentWillMount')
+  }
+  /* 组件加载完成 */
+  componentDidMount() {
+    console.log('挂载后componentDidMount')
+  }
+  /* 处理点击事件 */
+  setDateClick() {
+    this.setState({
+      data: 'new State'
+    })
+  }
+  /*将要接受父组件传来的props  */
+  componentWillReceiveProps(){
+
+  }
+  /* 子组件是不是应该更新 */
+  shouldComponentUpdate(){
+    /* go on */
+      return true;
+  }
+  /* 组件将要更新 */
+  componentWillUpdate(){
+
+  }
+  /* 渲染 */
+  render() {
+    console.log('render')
+    return (
+      <div>
+        <div>liveCycle</div>
+        <button onClick={()=>{this.setDateClick()}}>更新组件</button>
+      </div>
+    )
+  }
+}
+class LiveCycleFather extends React.Component {
+  /* 构造函数 */
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: 'old State'
+    }
+    console.log('初始化数据constructor')
+  }
+  onPropsChange(){
+    
+  }
+}
 // ReactDOM.render(jsx2, document.getElementById('root'));
 // ReactDOM.render(obj, document.getElementById('root'))
-ReactDOM.render(<Father />, document.getElementById('root'))
+ReactDOM.render(<LiveCycle />, document.getElementById('root'))
 // ReactDOM.render(App, document.getElementById('root'))
 registerServiceWorker()
