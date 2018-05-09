@@ -286,20 +286,44 @@ class LiveCycle extends React.Component {
       data: 'new State'
     })
   }
-  /*将要接受父组件传来的props  */
-  componentWillReceiveProps() {}
+  /*将要接受父组件传来的props*/
+  componentWillReceiveProps() {
+    console.log('componentWillReceiveProps')
+  }
   /* 子组件是不是应该更新 */
   shouldComponentUpdate() {
+    console.log('shouldComponentUpdate')
     /* go on */
-    return true
+    return true //默认return true 一般不会写
   }
   /* 组件将要更新 */
-  componentWillUpdate() {}
+  componentWillUpdate() {
+    console.log('componentWillUpdate')
+  }
+  /* 组件更新完成 */
+  componentDidUpdate() {
+    console.log('componentDidUpdate')
+  }
+  /* 组件即将销毁 收尾逻辑*/
+  componentWillUnmount() {
+    console.log('componentWillUnmount')
+  }
+  /* 
+  * state更新先执行shouldComponentUpdate 是不是子组件更新 是==》
+    执行componentWillUpdate==》componentDidUpdate
+    props会多一个componentWillReceiveProps 接收父组件传来的props==》
+    componentWillUpdate==》componentDidUpdate
+    一般会在shouldComponentUpdate判断状态 两次一致return false 不建议这样
+    虚拟dom也会比较两次不同
+    willUpdate DidUpdate 不会消耗时间 
+    不是性能遇见问题不要动shouldComponentUpdate 走默认true
+  */
   /* 渲染 */
   render() {
     console.log('render')
     return (
       <div>
+        <div>Props:{this.state.data}</div>
         <div>Props:{this.props.data}</div>
         <button
           onClick={() => {
@@ -317,7 +341,8 @@ class LiveCycleFather extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: 'old Props'
+      data: 'old Props',
+      hasChild: true
     }
     console.log('初始化数据constructor')
   }
@@ -328,17 +353,30 @@ class LiveCycleFather extends React.Component {
       data: 'new Props'
     })
   }
+  onDestoryChild() {
+    console.log('干掉子组件：')
+    this.setState({
+      hasChild: false
+    })
+  }
   render() {
     console.log('render')
     return (
       <div>
-        <LiveCycle data={this.state.data} />
+        {this.state.hasChild ? <LiveCycle data={this.state.data} /> : null}
         <button
           onClick={() => {
             this.onPropsChange()
           }}
         >
           改变Props
+        </button>
+        <button
+          onClick={() => {
+            this.onDestoryChild()
+          }}
+        >
+          干掉子组件：
         </button>
       </div>
     )
