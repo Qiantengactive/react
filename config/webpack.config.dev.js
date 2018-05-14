@@ -223,6 +223,7 @@ module.exports = {
     new InterpolateHtmlPlugin(env.raw),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
+      favicon:'./favicon.ico',
       inject: true,
       template: paths.appHtml,
     }),

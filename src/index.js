@@ -19,7 +19,10 @@ class App extends React.Component {
           <Switch>
             {/*没有switch 路劲是一个个匹配  Switch只匹配他第一个匹配的东西*/}
             <Route exact path="/" component={Home} />
-            <Redirect from="*" to="/" />
+            <Route exact path="/product" component={Home} />
+            {/* <Route exact path="/product.category" component={Home} /> */}
+            <Route exact path="/product-category" component={Home} />
+            {/* <Redirect from="*" to="/" /> */}
           </Switch>
         </Layout>
       </Router>
