@@ -1,6 +1,8 @@
 import React from 'react'
+import MUtil from '../../util/mm.jsx'
 // import User from 'ser'
 import './index.scss'
+const _mm = new MUtil()
 export default class Login extends React.Component {
   constructor(props) {
     super(props)
@@ -28,10 +30,21 @@ export default class Login extends React.Component {
     }
   }
   onSubmit() {
-    let loginInfo = {
-      username: this.state.username,
-      password: this.state.password
-    }
+    _mm
+      .request({
+        type: 'post',
+        // url: 'http://admintest.happymmall.com/manage/user/login.do'
+        url: '/manage/user/login.do',
+        data: {
+          username: this.state.username,
+          password: this.state.password
+        }
+      })
+      .then(res => {}, err => {})
+    // let loginInfo = {
+    //   username: this.state.username,
+    //   password: this.state.password
+    // }
   }
   render() {
     return (
@@ -60,7 +73,12 @@ export default class Login extends React.Component {
                   onChange={e => this.onInputChange(e)}
                 />
               </div>
-              <button className="btn btn-lg btn-primary btn-block">登录</button>
+              <button
+                className="btn btn-lg btn-primary btn-block"
+                onClick={e => this.onSubmit(e)}
+              >
+                登录
+              </button>
             </div>
           </div>
         </div>
