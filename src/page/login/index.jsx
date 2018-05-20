@@ -1,5 +1,8 @@
 import React from 'react'
-// import User from 'ser'
+import user from 'service/user-service.jsx'
+const __user = new user()
+import MUtil from 'util/mm.jsx'
+const __mm = new MUtil()
 import './index.scss'
 export default class Login extends React.Component {
   constructor(props) {
@@ -32,6 +35,35 @@ export default class Login extends React.Component {
       username: this.state.username,
       password: this.state.password
     }
+    let checkResult = __user.checkLoginInfo(loginInfo)
+    if (checkResult.status) {
+      __user.login(loginInfo).then(
+        res => {
+          /* 成功 */
+          alert(1)
+          __mm.setStorage('userInfo', res)
+          this.props.history.push(this.state.redirect);
+        },
+        err => {
+          /* 失败 */
+          alert(2)
+          __mm.errorTips(err)
+        }
+      )
+    } else {
+      __mm.errorTips(checkResult.msg)
+    }
+    // _mm
+    //   .request({
+    //     type: 'post',
+    //     // url: 'http://admintest.happymmall.com/manage/user/login.do'
+    //     url: '/manage/user/login.do',
+    //     data: {
+    //       username: this.state.username,
+    //       password: this.state.password
+    //     }
+    //   })
+    //   .then(res => { alert(1)}, err => {alert(2)})
   }
   render() {
     return (
@@ -45,7 +77,7 @@ export default class Login extends React.Component {
                   type="text"
                   name="username"
                   className="form-control"
-                  placeholder="admin"
+                  placeholder="username"
                   onKeyUp={e => this.onInputKeyUp(e)}
                   onChange={e => this.onInputChange(e)}
                 />
@@ -55,12 +87,17 @@ export default class Login extends React.Component {
                   type="password"
                   name="password"
                   className="form-control"
-                  placeholder="admin"
+                  placeholder="password"
                   onKeyUp={e => this.onInputKeyUp(e)}
                   onChange={e => this.onInputChange(e)}
                 />
               </div>
-              <button className="btn btn-lg btn-primary btn-block">登录</button>
+              <button
+                className="btn btn-lg btn-primary btn-block"
+                onClick={e => this.onSubmit(e)}
+              >
+                登录
+              </button>
             </div>
           </div>
         </div>
